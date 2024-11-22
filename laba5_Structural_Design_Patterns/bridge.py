@@ -1,29 +1,45 @@
-# Абстракция
-class Abstraction:
-    def __init__(self, implementation):
-        self.implementation = implementation
+from abc import ABC, abstractmethod
 
-    def operation(self):
-        return self.implementation.implementation_method()
-
-# Реализация
-class Implementation:
-    def implementation_method(self):
+# Реализация: разные способы рисования
+class DrawingTool(ABC):
+    @abstractmethod
+    def draw(self, shape):
         pass
 
-class ConcreteImplementationA(Implementation):
-    def implementation_method(self):
-        return "Implementation A"
+class Brush(DrawingTool):
+    def draw(self, shape):
+        print(f"Drawing {shape} with a brush")
 
-class ConcreteImplementationB(Implementation):
-    def implementation_method(self):
-        return "Implementation B"
+class Pencil(DrawingTool):
+    def draw(self, shape):
+        print(f"Drawing {shape} with a pencil")
 
-# Пример использования
-implementation_a = ConcreteImplementationA()
-abstraction_a = Abstraction(implementation_a)
-print(abstraction_a.operation())  # Implementation A
+# Абстракция: разные виды форм
+class Shape(ABC):
+    def __init__(self, drawing_tool: DrawingTool):
+        self.drawing_tool = drawing_tool
 
-implementation_b = ConcreteImplementationB()
-abstraction_b = Abstraction(implementation_b)
-print(abstraction_b.operation())  # Implementation B
+    @abstractmethod
+    def draw(self):
+        pass
+
+class Circle(Shape):
+    def draw(self):
+        self.drawing_tool.draw("circle")
+
+class Square(Shape):
+    def draw(self):
+        self.drawing_tool.draw("square")
+
+# Создание объектов
+brush = Brush()
+circle = Circle(brush)
+square = Square(brush)
+
+circle.draw()  # Drawing circle with a brush
+square.draw()  # Drawing square with a brush
+
+# Смена инструмента
+pencil = Pencil()
+circle.drawing_tool = pencil
+circle.draw()  # Drawing circle with a pencil
